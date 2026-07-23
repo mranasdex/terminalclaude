@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Leçon — Sentier Claude</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="topbar">
+  <a class="retour" href="index.html">← Sentier</a>
+  <div class="titre-court" id="titre-court"></div>
+  <div style="width:70px" aria-hidden="true"></div>
+</div>
+
+<div class="frame">
+  <div id="vue-exercice">
+    <div class="lecon-intro">
+      <p class="eyebrow">Leçon</p>
+      <div class="cmd" id="lecon-cmd"></div>
+      <p class="lecon-titre" id="lecon-titre"></p>
+      <p id="lecon-intro-txt"></p>
+    </div>
+
+    <div class="terminal bloc-exemple" id="bloc-exemple">
+      <div class="terminal-bar">exemple</div>
+      <div class="terminal-body">
+        <div><span class="prompt">&gt;</span> <span id="exemple-terminal"></span></div>
+        <div class="terminal-output" id="exemple-sortie"></div>
+      </div>
+    </div>
+
+    <div class="progress-track" id="progress-track"></div>
+
+    <div class="exo-wrap">
+      <div class="exo-card" id="exo-card"></div>
+    </div>
+  </div>
+
+  <div class="fin-ecran" id="vue-fin" style="display:none"></div>
+  <div class="verrouille-msg" id="vue-verrouille" style="display:none"></div>
+</div>
+
+<script src="data/lecons.js"></script>
+<script src="js/progression.js"></script>
+<script src="js/exercices.js"></script>
+</body>
+</html>
