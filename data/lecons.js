@@ -7,6 +7,7 @@
 const LECONS = [
   {
     id: 1,
+    categorie: "Essentiels",
     commande: "/help",
     titre: "Découvrir les commandes",
     intro: "/help affiche la liste de toutes les commandes disponibles, avec une courte description de chacune. C'est la commande à taper dès que tu ne sais plus quoi faire.",
@@ -63,6 +64,7 @@ const LECONS = [
   },
   {
     id: 2,
+    categorie: "Essentiels",
     commande: "/clear",
     titre: "Repartir sur une conversation neuve",
     intro: "/clear démarre une nouvelle conversation tout en gardant la mémoire du projet (fichiers CLAUDE.md, etc.). Utile quand le sujet en cours n'a plus rien à voir avec ta prochaine question.",
@@ -119,6 +121,7 @@ const LECONS = [
   },
   {
     id: 3,
+    categorie: "Essentiels",
     commande: "/resume",
     titre: "Retrouver une conversation passée",
     intro: "/resume permet de retrouver une conversation précédente, avec tout son historique, plutôt que de repartir de zéro.",
@@ -183,6 +186,7 @@ const LECONS = [
   },
   {
     id: 4,
+    categorie: "Essentiels",
     commande: "/model",
     titre: "Choisir son modèle",
     intro: "/model change le modèle utilisé pour la session en cours. Utile pour équilibrer vitesse, qualité et coût selon la tâche à faire.",
@@ -239,6 +243,7 @@ const LECONS = [
   },
   {
     id: 5,
+    categorie: "Essentiels",
     commande: "/diff",
     titre: "Vérifier ses changements",
     intro: "/diff ouvre un visualiseur interactif des fichiers modifiés, pour relire son travail avant de continuer.",
@@ -295,6 +300,7 @@ const LECONS = [
   },
   {
     id: 6,
+    categorie: "Essentiels",
     commande: "/init",
     titre: "Démarrer un projet",
     intro: "/init crée un fichier CLAUDE.md qui documente ton projet, pour que Claude Code le comprenne mieux dès la prochaine conversation.",
@@ -359,6 +365,7 @@ const LECONS = [
   },
   {
     id: 7,
+    categorie: "Essentiels",
     commande: "/config",
     titre: "Configurer la session",
     intro: "/config ouvre les réglages de Claude Code, ou permet de définir directement une option sous la forme clé=valeur.",
@@ -415,6 +422,7 @@ const LECONS = [
   },
   {
     id: 8,
+    categorie: "Essentiels",
     commande: "/compact",
     titre: "Gérer le contexte",
     intro: "/compact résume l'historique de la conversation pour libérer des tokens de contexte, sans perdre le fil de ce qui a été fait.",
@@ -471,6 +479,7 @@ const LECONS = [
   },
   {
     id: 9,
+    categorie: "Essentiels",
     commande: "/permissions",
     titre: "Contrôler les accès",
     intro: "/permissions configure les règles d'autorisation : quels outils et actions Claude peut exécuter automatiquement, et lesquels nécessitent ta confirmation.",
@@ -535,6 +544,7 @@ const LECONS = [
   },
   {
     id: 10,
+    categorie: "Essentiels",
     commande: "/code-review",
     titre: "Revoir son code",
     intro: "/code-review analyse le code modifié (ou une pull request) pour trouver des bugs et des pistes d'amélioration, avec plusieurs niveaux de profondeur.",
@@ -591,8 +601,9 @@ const LECONS = [
   },
   {
     id: 11,
+    categorie: "Essentiels",
     commande: null,
-    titre: "Défi final",
+    titre: "Défi — Essentiels",
     intro: "Une journée complète avec Claude Code : ce défi enchaîne la plupart des commandes du Module A dans un scénario réaliste, du réveil à la fin de journée.",
     disponible: true,
     final: true,
@@ -611,5 +622,65 @@ const LECONS = [
         { label: "Étape 9 — reprendre le fil du lendemain", reponse: "/resume" }
       ]
     }
-  }
+  },
+
+  /* --- Contexte et raisonnement -------------------------------------- */
+  { id: 12, categorie: "Contexte et raisonnement", commande: "/context", titre: "Visualiser le contexte", intro: "/context affiche une grille colorée montrant comment les tokens de la conversation sont utilisés.", disponible: false },
+  { id: 13, categorie: "Contexte et raisonnement", commande: "/plan", titre: "Réfléchir avant d'agir", intro: "/plan active un mode où Claude structure une approche avant d'effectuer des changements importants.", disponible: false },
+  { id: 14, categorie: "Contexte et raisonnement", commande: "/focus", titre: "Vue condensée", intro: "/focus bascule vers un affichage ne montrant que le dernier échange, pour moins de distraction.", disponible: false },
+  { id: 15, categorie: "Contexte et raisonnement", commande: "/btw", titre: "Question annexe", intro: "/btw pose une question rapide sans l'ajouter à l'historique de la conversation.", disponible: false },
+
+  /* --- Travail parallèle et délégation --------------------------------- */
+  { id: 16, categorie: "Travail parallèle et délégation", commande: "/tasks", titre: "Suivre les tâches en cours", intro: "/tasks liste les travaux en arrière-plan et les sous-agents actifs.", disponible: false },
+  { id: 17, categorie: "Travail parallèle et délégation", commande: "/background", titre: "Passer en arrière-plan", intro: "/background détache la session actuelle pour qu'elle continue de travailler en tâche de fond.", disponible: false },
+  { id: 18, categorie: "Travail parallèle et délégation", commande: "/fork", titre: "Explorer une autre piste", intro: "/fork copie la conversation dans une nouvelle session en arrière-plan pour tester une direction différente.", disponible: false },
+  { id: 19, categorie: "Travail parallèle et délégation", commande: "/branch", titre: "Créer une branche de conversation", intro: "/branch crée une branche pour explorer une approche alternative sans perdre le fil principal.", disponible: false },
+  { id: 20, categorie: "Travail parallèle et délégation", commande: "/batch", titre: "Orchestrer un gros changement", intro: "/batch répartit un changement à grande échelle sur plusieurs agents travaillant en parallèle.", disponible: false },
+  { id: 21, categorie: "Travail parallèle et délégation", commande: "/subtask", titre: "Déléguer une tâche annexe", intro: "/subtask confie une tâche à un sous-agent qui revient ensuite avec le résultat.", disponible: false },
+
+  /* --- Dépannage -------------------------------------------------------- */
+  { id: 22, categorie: "Dépannage", commande: "/doctor", titre: "Diagnostiquer l'installation", intro: "/doctor vérifie l'installation de Claude Code et corrige automatiquement les soucis courants.", disponible: false },
+  { id: 23, categorie: "Dépannage", commande: "/debug", titre: "Activer les journaux détaillés", intro: "/debug active des logs détaillés pour comprendre un comportement inattendu.", disponible: false },
+  { id: 24, categorie: "Dépannage", commande: "/bug", titre: "Signaler un bug", intro: "/bug envoie un rapport de bug à l'équipe Anthropic, avec le contexte de la conversation.", disponible: false },
+  { id: 25, categorie: "Dépannage", commande: "/feedback", titre: "Donner un avis produit", intro: "/feedback envoie un retour sur Claude Code à Anthropic.", disponible: false },
+  { id: 26, categorie: "Dépannage", commande: "/heapdump", titre: "Diagnostiquer la mémoire", intro: "/heapdump écrit un instantané mémoire sur le disque pour diagnostiquer un problème de consommation.", disponible: false },
+
+  /* --- Compte et intégrations -------------------------------------------- */
+  { id: 27, categorie: "Compte et intégrations", commande: "/login", titre: "Se connecter", intro: "/login connecte la session à ton compte Anthropic.", disponible: false },
+  { id: 28, categorie: "Compte et intégrations", commande: "/logout", titre: "Se déconnecter", intro: "/logout déconnecte la session en cours du compte Anthropic.", disponible: false },
+  { id: 29, categorie: "Compte et intégrations", commande: "/desktop", titre: "Continuer sur l'appli Desktop", intro: "/desktop transfère la session en cours vers l'application Claude Code Desktop.", disponible: false },
+  { id: 30, categorie: "Compte et intégrations", commande: "/install-github-app", titre: "Installer l'app GitHub", intro: "/install-github-app installe l'application GitHub Claude pour la revue automatique de pull requests.", disponible: false },
+  { id: 31, categorie: "Compte et intégrations", commande: "/install-slack-app", titre: "Installer Claude sur Slack", intro: "/install-slack-app installe Claude dans un espace de travail Slack.", disponible: false },
+
+  /* --- Utilitaires -------------------------------------------------------- */
+  { id: 32, categorie: "Utilitaires", commande: "/copy", titre: "Copier une réponse", intro: "/copy copie la dernière réponse (ou une réponse précédente) dans le presse-papiers.", disponible: false },
+  { id: 33, categorie: "Utilitaires", commande: "/export", titre: "Exporter la conversation", intro: "/export enregistre la conversation dans un fichier texte ou Markdown.", disponible: false },
+
+  /* --- Workflows spécialisés ------------------------------------------- */
+  { id: 34, categorie: "Workflows spécialisés", commande: "/deep-research", titre: "Recherche approfondie", intro: "/deep-research lance plusieurs recherches web en parallèle et synthétise un rapport complet.", disponible: false },
+  { id: 35, categorie: "Workflows spécialisés", commande: "/loop", titre: "Répéter une tâche", intro: "/loop exécute un prompt ou une commande de façon répétée à intervalle régulier.", disponible: false },
+  { id: 36, categorie: "Workflows spécialisés", commande: "/dataviz", titre: "Créer des visualisations", intro: "/dataviz charge les bonnes pratiques de design pour construire des graphiques et tableaux de bord.", disponible: false },
+  { id: 37, categorie: "Workflows spécialisés", commande: "/autofix-pr", titre: "Corriger une PR automatiquement", intro: "/autofix-pr surveille une pull request et pousse des corrections automatiquement si les tests échouent.", disponible: false },
+  { id: 38, categorie: "Workflows spécialisés", commande: "/design-sync", titre: "Synchroniser un design system", intro: "/design-sync réutilise un système de design React d'une session à l'autre.", disponible: false },
+  { id: 39, categorie: "Workflows spécialisés", commande: "/claude-api", titre: "Référence de l'API Claude", intro: "/claude-api charge la documentation de l'API Claude ou aide à migrer vers les Managed Agents.", disponible: false },
+
+  /* --- Configuration avancée --------------------------------------------- */
+  { id: 40, categorie: "Configuration avancée", commande: "/memory", titre: "Gérer la mémoire", intro: "/memory édite les fichiers mémoire ou active/désactive la mémoire automatique.", disponible: false },
+  { id: 41, categorie: "Configuration avancée", commande: "/add-dir", titre: "Ajouter un dossier de travail", intro: "/add-dir autorise l'accès à un dossier supplémentaire pendant la session.", disponible: false },
+  { id: 42, categorie: "Configuration avancée", commande: "/cd", titre: "Changer de dossier", intro: "/cd change le dossier de travail de la session en cours.", disponible: false },
+  { id: 43, categorie: "Configuration avancée", commande: "/mcp", titre: "Gérer les serveurs MCP", intro: "/mcp gère les connexions aux serveurs MCP, c'est-à-dire les outils externes connectés à Claude Code.", disponible: false },
+  { id: 44, categorie: "Configuration avancée", commande: "/keybindings", titre: "Personnaliser les raccourcis", intro: "/keybindings ouvre le fichier de configuration des raccourcis clavier.", disponible: false },
+  { id: 45, categorie: "Configuration avancée", commande: "/color", titre: "Changer la couleur de l'interface", intro: "/color change la couleur de la barre de saisie.", disponible: false },
+  { id: 46, categorie: "Configuration avancée", commande: "/effort", titre: "Régler l'effort de raisonnement", intro: "/effort définit le niveau de réflexion de Claude : low, medium, high, xhigh ou max.", disponible: false },
+
+  /* --- Sécurité et qualité ---------------------------------------------- */
+  { id: 47, categorie: "Sécurité et qualité", commande: "/security-review", titre: "Revue de sécurité", intro: "/security-review analyse le diff à la recherche de failles de sécurité.", disponible: false },
+  { id: 48, categorie: "Sécurité et qualité", commande: "/verify", titre: "Vérifier un changement", intro: "/verify lance des vérifications pour confirmer qu'un changement fonctionne comme prévu.", disponible: false },
+
+  /* --- Ligne de commande (hors session) ---------------------------------- */
+  { id: 49, categorie: "Ligne de commande (CLI)", commande: "claude -p", titre: "Requête en une fois", intro: "claude -p exécute une requête et quitte immédiatement, pratique dans un script.", disponible: false },
+  { id: 50, categorie: "Ligne de commande (CLI)", commande: "claude -c", titre: "Continuer la dernière session", intro: "claude -c continue la conversation la plus récente, directement depuis le terminal.", disponible: false },
+  { id: 51, categorie: "Ligne de commande (CLI)", commande: "claude -r", titre: "Reprendre une session précise", intro: "claude -r reprend une session précise à partir de son identifiant.", disponible: false },
+  { id: 52, categorie: "Ligne de commande (CLI)", commande: "claude update", titre: "Mettre à jour Claude Code", intro: "claude update installe la dernière version de Claude Code.", disponible: false },
+  { id: 53, categorie: "Ligne de commande (CLI)", commande: "claude mcp", titre: "Configurer MCP hors session", intro: "claude mcp configure les serveurs MCP directement en ligne de commande, sans ouvrir de session.", disponible: false }
 ];

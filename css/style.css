@@ -88,36 +88,41 @@ h1{font-family:var(--font-display); font-size:2.4rem; margin:0 0 .5rem; text-wra
 .chip .dot{width:8px; height:8px; border-radius:50%; background:var(--amber);}
 .chip .dot.moss{background:var(--moss);}
 
-/* sentier */
+/* parcours */
 .path-section{padding:2.4rem 1.2rem 0;}
 .path-heading{text-align:center; margin-bottom:1.6rem;}
 .path-heading h2{font-family:var(--font-display); font-size:1.4rem; margin:0 0 .3rem; font-weight:600;}
 .path-heading p{color:var(--ink-muted); font-size:.9rem; margin:0;}
 
-.path-wrap{position:relative; max-width:520px; margin:0 auto;}
-.path-wrap svg{position:absolute; inset:0; width:100%; height:100%;}
-.path-wrap svg path{fill:none; stroke:var(--line); stroke-width:5; stroke-linecap:round; stroke-dasharray:1 16;}
+.path-wrap{max-width:680px; margin:0 auto; display:flex; flex-direction:column; gap:1.6rem;}
 
-.node{position:absolute; transform:translate(-50%,-50%); width:78px; text-align:center;}
-.node .bubble{
-  width:60px; height:60px; border-radius:50%; margin:0 auto .4rem;
+.chapitre-titre{
+  font-family:var(--font-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-muted); margin:0 0 .7rem; padding-bottom:.4rem; border-bottom:1px solid var(--line);
+}
+.chapitre-grille{display:flex; flex-wrap:wrap; gap:.55rem .5rem;}
+
+.node-compact{position:relative; width:62px; text-align:center;}
+.bubble-sm{
+  width:46px; height:46px; border-radius:50%; margin:0 auto .3rem;
   display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-mono); font-size:.66rem; font-weight:600;
+  font-family:var(--font-mono); font-size:.6rem; font-weight:600;
   border:2px solid var(--line); background:var(--surface); color:var(--ink-muted);
   transition:transform .15s ease;
 }
-.node .label{font-size:.7rem; color:var(--ink-muted); font-family:var(--font-mono);}
-.node.termine .bubble{background:var(--moss-soft); border-color:var(--moss); color:var(--moss);}
-.node.actuelle .bubble{background:var(--amber-soft); border-color:var(--amber); color:var(--amber); box-shadow:0 0 0 6px var(--amber-soft);}
-.node.actuelle .label{color:var(--amber); font-weight:700;}
-.node.verrouille .bubble{color:var(--lock); border-style:dashed; cursor:default;}
-.node.verrouille .label{opacity:.6;}
-.node.final .bubble{border-radius:22px; font-size:1.1rem;}
-.node.cliquable:hover .bubble{transform:scale(1.06);}
-.node .bientot{
-  position:absolute; bottom:-1.1rem; left:50%; transform:translateX(-50%);
-  font-size:.58rem; color:var(--ink-muted); white-space:nowrap;
+.label-sm{
+  font-size:.6rem; color:var(--ink-muted); font-family:var(--font-mono);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
+.node-compact.termine .bubble-sm{background:var(--moss-soft); border-color:var(--moss); color:var(--moss);}
+.node-compact.actuelle .bubble-sm{background:var(--amber-soft); border-color:var(--amber); color:var(--amber); box-shadow:0 0 0 4px var(--amber-soft);}
+.node-compact.actuelle .label-sm{color:var(--amber); font-weight:700;}
+.node-compact.verrouille .bubble-sm{color:var(--lock); border-style:dashed; cursor:default;}
+.node-compact.verrouille .label-sm{opacity:.6;}
+.node-compact.final .bubble-sm{border-radius:14px; font-size:1rem;}
+.node-compact.termine:hover .bubble-sm,
+.node-compact.actuelle:hover .bubble-sm{transform:scale(1.08);}
+.bientot-sm{font-size:.52rem; color:var(--ink-muted); opacity:.7; margin-top:.1rem;}
 
 /* comment ça marche */
 .how{max-width:600px; margin:3rem auto 0; padding:0 1.2rem; display:grid; grid-template-columns:repeat(2,1fr); gap:.7rem;}

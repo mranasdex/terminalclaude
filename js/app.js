@@ -1,73 +1,61 @@
 /*
- * Moteur de la page d'accueil : dessine le sentier (SVG + noeuds) à partir
- * de data/lecons.js et de la progression sauvegardée en localStorage.
+ * Moteur de la page d'accueil : dessine le parcours en grille compacte,
+ * groupée par catégorie, à partir de data/lecons.js et de la progression
+ * sauvegardée en localStorage.
  */
-
-const LARGEUR_VIEWBOX = 500;
-const PAS_Y = 150;
-const MARGE_HAUTE = 80;
-const MARGE_BASSE = 140;
-
-// position horizontale (en %) de chaque étape du sentier, dans l'ordre
-const COULOIRS = [50, 74, 86, 74, 50, 26, 14, 26, 50, 74, 50];
-
-function positionNoeud(index) {
-  const x = (COULOIRS[index % COULOIRS.length] / 100) * LARGEUR_VIEWBOX;
-  const y = MARGE_HAUTE + index * PAS_Y;
-  return { x, y };
-}
-
-function construireCheminSVG(n) {
-  const points = [];
-  for (let i = 0; i < n; i++) points.push(positionNoeud(i));
-  let d = `M${points[0].x},${points[0].y}`;
-  for (let i = 1; i < points.length; i++) {
-    const prec = points[i - 1];
-    const cour = points[i];
-    const yMilieu = (prec.y + cour.y) / 2;
-    d += ` C${prec.x},${yMilieu} ${cour.x},${yMilieu} ${cour.x},${cour.y}`;
-  }
-  return d;
-}
 
 function initialesCommande(lecon) {
   if (lecon.final) return "🏆";
-  return lecon.commande.replace("/", "").slice(0, 5);
+  return lecon.commande.replace(/^\//, "").replace(/^claude /, "").slice(0, 5);
+}
+
+function grouperParCategorie(lecons) {
+  const groupes = [];
+  let courant = null;
+  lecons.forEach((lecon) => {
+    if (!courant || courant.categorie !== lecon.categorie) {
+      courant = { categorie: lecon.categorie, lecons: [] };
+      groupes.push(courant);
+    }
+    courant.lecons.push(lecon);
+  });
+  return groupes;
 }
 
 function dessinerSentier(progression) {
-  const n = LECONS.length;
-  const hauteurTotale = MARGE_HAUTE + (n - 1) * PAS_Y + MARGE_BASSE;
-  const wrap = document.getElementById("path-wrap");
-  wrap.innerHTML = "";
-  wrap.style.aspectRatio = `${LARGEUR_VIEWBOX} / ${hauteurTotale}`;
+  const conteneur = document.getElementById("path-wrap");
+  conteneur.innerHTML = "";
 
-  const svgNS = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("viewBox", `0 0 ${LARGEUR_VIEWBOX} ${hauteurTotale}`);
-  svg.setAttribute("aria-hidden", "true");
-  const path = document.createElementNS(svgNS, "path");
-  path.setAttribute("d", construireCheminSVG(n));
-  svg.appendChild(path);
-  wrap.appendChild(svg);
+  grouperParCategorie(LECONS).forEach((groupe) => {
+    const section = document.createElement("section");
+    section.className = "chapitre";
 
-  LECONS.forEach((lecon, index) => {
-    const etat = etatLecon(lecon, progression);
-    const { x, y } = positionNoeud(index);
+    const titre = document.createElement("h3");
+    titre.className = "chapitre-titre";
+    titre.textContent = groupe.categorie;
+    section.appendChild(titre);
 
-    const noeud = document.createElement(etat === "verrouille" ? "div" : "a");
-    if (etat !== "verrouille") noeud.href = `lecon.html?id=${lecon.id}`;
-    noeud.className = `node ${etat}${lecon.final ? " final" : ""}${etat !== "verrouille" ? " cliquable" : ""}`;
-    noeud.style.left = `${(x / LARGEUR_VIEWBOX) * 100}%`;
-    noeud.style.top = `${(y / hauteurTotale) * 100}%`;
+    const grille = document.createElement("div");
+    grille.className = "chapitre-grille";
 
-    const label = lecon.final ? "Défi final" : lecon.commande;
-    noeud.innerHTML = `
-      <div class="bubble">${initialesCommande(lecon)}</div>
-      <div class="label">${label}</div>
-      ${!lecon.disponible ? '<div class="bientot">bientôt</div>' : ""}
-    `;
-    wrap.appendChild(noeud);
+    groupe.lecons.forEach((lecon) => {
+      const etat = etatLecon(lecon, progression);
+      const noeud = document.createElement(etat === "verrouille" ? "div" : "a");
+      if (etat !== "verrouille") noeud.href = `lecon.html?id=${lecon.id}`;
+      noeud.className = `node-compact ${etat}${lecon.final ? " final" : ""}`;
+      noeud.title = lecon.final ? lecon.titre : lecon.commande;
+
+      const label = lecon.final ? "Défi" : lecon.commande;
+      noeud.innerHTML = `
+        <div class="bubble-sm">${initialesCommande(lecon)}</div>
+        <div class="label-sm">${label}</div>
+        ${!lecon.disponible ? '<div class="bientot-sm">bientôt</div>' : ""}
+      `;
+      grille.appendChild(noeud);
+    });
+
+    section.appendChild(grille);
+    conteneur.appendChild(section);
   });
 }
 
