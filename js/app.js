@@ -39,6 +39,7 @@ function dessinerSentier(progression) {
   const n = LECONS.length;
   const hauteurTotale = MARGE_HAUTE + (n - 1) * PAS_Y + MARGE_BASSE;
   const wrap = document.getElementById("path-wrap");
+  wrap.innerHTML = "";
   wrap.style.aspectRatio = `${LARGEUR_VIEWBOX} / ${hauteurTotale}`;
 
   const svgNS = "http://www.w3.org/2000/svg";
@@ -75,6 +76,12 @@ function afficherStats(progression) {
   document.getElementById("stat-serie").textContent = `${progression.serie} jour${progression.serie > 1 ? "s" : ""}`;
   document.getElementById("stat-progres").textContent = `${progression.leconsTerminees.length}/${disponibles}`;
   document.getElementById("stat-xp").textContent = progression.xp;
+}
+
+function rafraichirApresConnexion() {
+  const progression = chargerProgression();
+  dessinerSentier(progression);
+  afficherStats(progression);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

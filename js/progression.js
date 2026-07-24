@@ -51,6 +51,62 @@ function marquerLeconTerminee(id) {
   return p;
 }
 
+/* --- Synchronisation Supabase (V2) -------------------------------------
+ * localStorage reste la source instantanée (l'app marche hors-ligne/sans
+ * compte). Quand un utilisateur est connecté, on fusionne avec la table
+ * "progression" de Supabase : union des leçons terminées, XP recalculé,
+ * série et date les plus avancées des deux côtés.
+ */
+
+function dateLaPlusRecente(a, b) {
+  if (!a) return b;
+  if (!b) return a;
+  return a > b ? a : b;
+}
+
+async function synchroniserVersSupabase(userId) {
+  if (typeof supabaseConfigure !== "function" || !supabaseConfigure()) return;
+  const p = chargerProgression();
+  await supabaseClient.from("progression").upsert({
+    user_id: userId,
+    lecons_terminees: p.leconsTerminees,
+    xp: p.xp,
+    serie: p.serie,
+    derniere_visite: p.derniereVisite,
+    updated_at: new Date().toISOString()
+  });
+}
+
+async function fusionnerDepuisSupabase(userId) {
+  const local = chargerProgression();
+  if (typeof supabaseConfigure !== "function" || !supabaseConfigure()) return local;
+
+  const { data, error } = await supabaseClient
+    .from("progression")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error || !data) {
+    await synchroniserVersSupabase(userId);
+    return local;
+  }
+
+  const leconsFusionnees = Array.from(
+    new Set([...local.leconsTerminees, ...(data.lecons_terminees || [])])
+  );
+  const fusion = {
+    leconsTerminees: leconsFusionnees,
+    xp: leconsFusionnees.length * XP_PAR_LECON,
+    serie: Math.max(local.serie, data.serie || 0),
+    derniereVisite: dateLaPlusRecente(local.derniereVisite, data.derniere_visite)
+  };
+
+  sauvegarderProgression(fusion);
+  await synchroniserVersSupabase(userId);
+  return fusion;
+}
+
 function etatLecon(lecon, progression) {
   if (!lecon.disponible) return "verrouille";
   if (progression.leconsTerminees.includes(lecon.id)) return "termine";

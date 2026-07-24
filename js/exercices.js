@@ -245,4 +245,10 @@ function afficherVerrouille() {
   el.innerHTML = `<p>Cette leçon n'est pas encore disponible.</p><a class="btn" href="index.html">Retour au sentier</a>`;
 }
 
+function rafraichirApresConnexion() {
+  // Une connexion en pleine leçon est rare : on recharge simplement la page
+  // pour repartir sur une progression fraîchement fusionnée.
+  location.reload();
+}
+
 document.addEventListener("DOMContentLoaded", demarrer);
