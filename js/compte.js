@@ -110,19 +110,21 @@ async function initCompte() {
 
   construireWidgetCompte(conteneur);
 
-  const utilisateur = await utilisateurActuel();
-  if (utilisateur) {
-    afficherEtatConnecte(conteneur, utilisateur);
-    await fusionnerDepuisSupabase(utilisateur.id);
-    if (typeof rafraichirApresConnexion === "function") rafraichirApresConnexion();
-  }
+  // onAuthChange se déclenche une première fois tout seul avec la session
+  // déjà active au chargement de la page : un seul point d'entrée suffit,
+  // pas besoin de vérifier utilisateurActuel() en plus (ça déclenchait une
+  // double synchronisation, et sur la page leçon un rechargement en boucle).
+  let dernierIdSynchronise = null;
 
   onAuthChange(async (u) => {
     if (u) {
       afficherEtatConnecte(conteneur, u);
+      if (dernierIdSynchronise === u.id) return;
+      dernierIdSynchronise = u.id;
       await fusionnerDepuisSupabase(u.id);
       if (typeof rafraichirApresConnexion === "function") rafraichirApresConnexion();
     } else {
+      dernierIdSynchronise = null;
       afficherEtatDeconnecte(conteneur);
     }
   });
