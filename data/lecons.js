@@ -547,11 +547,21 @@ const LECONS = [
     categorie: "Essentiels",
     commande: "/code-review",
     titre: "Revoir son code",
-    intro: "/code-review analyse le code modifié (ou une pull request) pour trouver des bugs et des pistes d'amélioration, avec plusieurs niveaux de profondeur.",
+    intro: "/code-review analyse le code modifié (ou une pull request GitHub) pour trouver des bugs et des pistes d'amélioration. Le résultat dépend de ce que tu ajoutes après la commande : un niveau de profondeur, un numéro de pull request, ou l'option --fix. Regarde le tableau ci-dessous avant de répondre aux exercices — chaque option y est expliquée.",
     exemple: {
       terminal: "/code-review high",
-      sortie: "Revue de code (niveau: high)\n1. [correctness] src/auth.js:42 — token non vérifié avant usage"
+      sortie: "Revue de code (niveau: high)\n1. [correctness] src/auth.js:42 — token non vérifié avant usage\n2. [simplification] src/utils.js:10 — fonction dupliquée avec helpers.js\nAucune autre anomalie détectée."
     },
+    optionsDetail: [
+      { option: "(aucun argument)", effet: "Lance une revue de niveau standard (medium) sur les changements en cours" },
+      { option: "low", effet: "Analyse rapide et légère — pour une vérification de routine, sans grand enjeu" },
+      { option: "medium", effet: "Niveau par défaut, bon compromis pour un usage quotidien" },
+      { option: "high", effet: "Analyse plus approfondie — avant de livrer une fonctionnalité importante" },
+      { option: "xhigh / max", effet: "Analyse très poussée et plus lente — réservée au code sensible ou critique" },
+      { option: "ultra", effet: "Revue multi-agents dans le cloud — pour une branche entière avant de la fusionner" },
+      { option: "--fix", effet: "Applique automatiquement les corrections trouvées, en plus de l'analyse" },
+      { option: "<numéro de PR>", effet: "Analyse directement une pull request GitHub précise, sans changer de branche localement" }
+    ],
     disponible: true,
     exercices: [
       {
@@ -565,7 +575,7 @@ const LECONS = [
         type: "saisie",
         consigne: "Tape la commande qui analyse le code modifié pour trouver des bugs.",
         reponse: "/code-review",
-        explication: "/code-review — sans argument, elle lance une revue de niveau standard."
+        explication: "/code-review — sans argument, elle lance une revue de niveau medium (le niveau par défaut)."
       },
       {
         type: "scenario",
@@ -625,10 +635,238 @@ const LECONS = [
   },
 
   /* --- Contexte et raisonnement -------------------------------------- */
-  { id: 12, categorie: "Contexte et raisonnement", commande: "/context", titre: "Visualiser le contexte", intro: "/context affiche une grille colorée montrant comment les tokens de la conversation sont utilisés.", disponible: false },
-  { id: 13, categorie: "Contexte et raisonnement", commande: "/plan", titre: "Réfléchir avant d'agir", intro: "/plan active un mode où Claude structure une approche avant d'effectuer des changements importants.", disponible: false },
-  { id: 14, categorie: "Contexte et raisonnement", commande: "/focus", titre: "Vue condensée", intro: "/focus bascule vers un affichage ne montrant que le dernier échange, pour moins de distraction.", disponible: false },
-  { id: 15, categorie: "Contexte et raisonnement", commande: "/btw", titre: "Question annexe", intro: "/btw pose une question rapide sans l'ajouter à l'historique de la conversation.", disponible: false },
+  {
+    id: 12,
+    categorie: "Contexte et raisonnement",
+    commande: "/context",
+    titre: "Visualiser le contexte",
+    intro: "/context affiche une grille colorée montrant comment les tokens de la conversation sont utilisés (messages, outils, fichiers...). Ça aide à comprendre pourquoi une session ralentit ou se remplit. Par défaut elle montre un résumé ; ajoute all pour voir le détail complet.",
+    exemple: {
+      terminal: "/context",
+      sortie: "Contexte utilisé : 42%\n[messages] ████████░░ 60%\n[outils]   ███░░░░░░░ 25%\n[fichiers] █░░░░░░░░░ 15%"
+    },
+    optionsDetail: [
+      { option: "(aucun argument)", effet: "Affiche un résumé visuel de l'utilisation du contexte" },
+      { option: "all", effet: "Affiche le détail complet, poste par poste, plutôt qu'un simple résumé" }
+    ],
+    disponible: true,
+    exercices: [
+      {
+        type: "qcm",
+        question: "Tu remarques que Claude met plus de temps à répondre et tu veux comprendre ce qui occupe le plus de place dans la conversation. Que tapes-tu ?",
+        options: ["/context", "/compact", "/diff", "/config"],
+        reponse: 0,
+        explication: "/context affiche visuellement où sont utilisés les tokens, ce qui aide à comprendre pourquoi une session ralentit."
+      },
+      {
+        type: "saisie",
+        consigne: "Tape la commande qui affiche le détail complet de l'utilisation du contexte, poste par poste.",
+        reponse: "/context all",
+        explication: "/context all — affiche chaque poste (messages, outils, fichiers...) au lieu d'un simple résumé."
+      },
+      {
+        type: "scenario",
+        situation: "Tu veux juste un aperçu rapide de combien de contexte il te reste avant de continuer.",
+        reponse: "/context",
+        explication: "Sans argument, /context donne un résumé visuel rapide, suffisant pour un simple coup d'œil."
+      },
+      {
+        type: "scenario",
+        situation: "Tu veux voir le détail complet, poste par poste, plutôt qu'un simple résumé.",
+        reponse: "/context all",
+        explication: "L'argument all développe chaque catégorie au lieu de les résumer."
+      },
+      {
+        type: "scenario",
+        situation: "Avant de lancer une tâche très longue, tu veux vérifier combien de marge de contexte il te reste.",
+        reponse: "/context",
+        explication: "Un contrôle rapide avant une grosse tâche évite les mauvaises surprises en cours de route."
+      },
+      {
+        type: "scenario",
+        situation: "Un collègue te demande pourquoi Claude ralentit sur son projet. Que lui conseilles-tu de vérifier en premier ?",
+        reponse: "/context",
+        explication: "C'est le premier réflexe de diagnostic pour un ralentissement lié au contexte."
+      },
+      {
+        type: "scenario",
+        situation: "Tu soupçonnes qu'un gros fichier accapare une grande partie du contexte, et tu veux le vérifier précisément.",
+        reponse: "/context all",
+        explication: "Le détail complet (all) permet d'identifier précisément quel poste consomme le plus."
+      }
+    ]
+  },
+  {
+    id: 13,
+    categorie: "Contexte et raisonnement",
+    commande: "/plan",
+    titre: "Réfléchir avant d'agir",
+    intro: "/plan active le mode plan : avant d'effectuer des changements importants, Claude présente une approche structurée que tu peux valider ou ajuster avant qu'il n'agisse. C'est un simple interrupteur, sans option ni argument.",
+    exemple: {
+      terminal: "/plan",
+      sortie: "Mode plan activé.\nClaude va proposer une approche avant d'effectuer des changements."
+    },
+    disponible: true,
+    exercices: [
+      {
+        type: "qcm",
+        question: "Tu t'apprêtes à demander une modification importante et risquée sur un gros projet, et tu veux d'abord voir l'approche de Claude avant qu'il ne touche à quoi que ce soit. Que tapes-tu ?",
+        options: ["/plan", "/verify", "/diff", "/context"],
+        reponse: 0,
+        explication: "/plan fait exposer l'approche à Claude avant toute action, pour validation."
+      },
+      {
+        type: "saisie",
+        consigne: "Tape la commande qui fait réfléchir Claude à une approche avant d'agir sur un changement important.",
+        reponse: "/plan",
+        explication: "/plan — aucun argument, juste un interrupteur à activer avant une tâche sensible."
+      },
+      {
+        type: "scenario",
+        situation: "Tu vas demander une refonte importante d'un module critique et veux valider l'approche avant que Claude ne touche au code.",
+        reponse: "/plan",
+        explication: "Valider le plan avant d'agir limite le risque sur du code critique."
+      },
+      {
+        type: "scenario",
+        situation: "Un collègue junior a peur que Claude « fonce » sans réfléchir sur une tâche complexe.",
+        reponse: "/plan",
+        explication: "/plan répond exactement à cette inquiétude : une étape de réflexion structurée avant l'action."
+      },
+      {
+        type: "scenario",
+        situation: "Tu veux comparer plusieurs façons de résoudre un problème avant de choisir laquelle appliquer.",
+        reponse: "/plan",
+        explication: "Le mode plan expose le raisonnement et les options avant de passer à l'exécution."
+      },
+      {
+        type: "scenario",
+        situation: "La tâche est risquée pour la production, tu veux une étape de validation avant toute action.",
+        reponse: "/plan",
+        explication: "Systématique à activer avant toute tâche à risque sur un environnement sensible."
+      },
+      {
+        type: "scenario",
+        situation: "Tu formes quelqu'un et veux lui montrer comment Claude peut exposer son raisonnement avant d'agir.",
+        reponse: "/plan",
+        explication: "Bonne commande pédagogique pour montrer le raisonnement avant l'exécution."
+      }
+    ]
+  },
+  {
+    id: 14,
+    categorie: "Contexte et raisonnement",
+    commande: "/focus",
+    titre: "Vue condensée",
+    intro: "/focus bascule vers un affichage condensé qui ne montre que le dernier échange (prompt + réponse), pour réduire les distractions dans une longue conversation. Retape /focus pour revenir à l'affichage complet — ça ne touche jamais à l'historique réel, seulement à ce qui est affiché.",
+    exemple: {
+      terminal: "/focus",
+      sortie: "Vue condensée activée.\n(seul le dernier échange est affiché ; l'historique complet reste intact)"
+    },
+    disponible: true,
+    exercices: [
+      {
+        type: "qcm",
+        question: "La conversation est très longue et tu veux te concentrer uniquement sur le dernier échange, sans scroller dans tout l'historique. Que tapes-tu ?",
+        options: ["/focus", "/compact", "/clear", "/context"],
+        reponse: 0,
+        explication: "/focus change seulement l'affichage — contrairement à /compact ou /clear, qui touchent à l'historique lui-même."
+      },
+      {
+        type: "saisie",
+        consigne: "Tape la commande qui affiche uniquement le dernier échange, sans toucher à l'historique.",
+        reponse: "/focus",
+        explication: "/focus — un simple interrupteur d'affichage, réversible en le retapant."
+      },
+      {
+        type: "scenario",
+        situation: "Une conversation très longue te fatigue à faire défiler ; tu veux juste voir le dernier échange.",
+        reponse: "/focus",
+        explication: "C'est exactement le cas d'usage principal de /focus."
+      },
+      {
+        type: "scenario",
+        situation: "Tu veux réduire les distractions visuelles sans perdre l'historique de la conversation (contrairement à /clear ou /compact).",
+        reponse: "/focus",
+        explication: "/focus ne supprime ni ne résume rien, il change juste ce qui est affiché à l'écran."
+      },
+      {
+        type: "scenario",
+        situation: "Tu partages ton écran en réunion et veux une vue plus épurée, sans tout l'historique affiché.",
+        reponse: "/focus",
+        explication: "Utile pour une présentation propre sans dérouler toute la conversation."
+      },
+      {
+        type: "scenario",
+        situation: "Après avoir utilisé la vue condensée, tu veux revenir à l'affichage complet de la conversation.",
+        reponse: "/focus",
+        explication: "/focus est un interrupteur : le retaper revient à l'affichage complet."
+      },
+      {
+        type: "scenario",
+        situation: "Un collègue te demande comment alléger visuellement une conversation sans en perdre le contenu.",
+        reponse: "/focus",
+        explication: "C'est la réponse à lui donner : rien n'est perdu, seul l'affichage change."
+      }
+    ]
+  },
+  {
+    id: 15,
+    categorie: "Contexte et raisonnement",
+    commande: "/btw",
+    titre: "Question annexe",
+    intro: "/btw pose une question rapide sans l'ajouter à l'historique principal de la conversation — utile pour une question hors-sujet sans polluer le fil de travail en cours. Tape /btw suivi directement de ta question.",
+    exemple: {
+      terminal: "/btw quelle est la capitale de l'Australie ?",
+      sortie: "Canberra.\n(cette question n'a pas été ajoutée à l'historique de la conversation)"
+    },
+    disponible: true,
+    exercices: [
+      {
+        type: "qcm",
+        question: "Tu es en pleine tâche de code et une question totalement hors-sujet te traverse l'esprit. Tu veux la poser sans polluer le fil de la conversation en cours. Que tapes-tu devant ta question ?",
+        options: ["/btw", "/focus", "/clear", "/plan"],
+        reponse: 0,
+        explication: "/btw répond à une question sans l'ajouter à l'historique, contrairement à une question posée normalement."
+      },
+      {
+        type: "saisie",
+        consigne: "Tape la commande qui permet de poser une question annexe sans l'ajouter à l'historique.",
+        reponse: "/btw",
+        explication: "/btw — à faire suivre directement de la question, ex. « /btw quelle heure est-il ? »."
+      },
+      {
+        type: "scenario",
+        situation: "En pleine tâche, une question sans rapport te traverse l'esprit et tu veux une réponse rapide sans polluer le fil.",
+        reponse: "/btw",
+        explication: "C'est exactement le cas d'usage prévu pour /btw."
+      },
+      {
+        type: "scenario",
+        situation: "Tu veux vérifier un détail technique annexe sans que ça n'apparaisse dans l'historique de ta conversation de travail.",
+        reponse: "/btw",
+        explication: "La question posée via /btw n'est pas conservée dans le fil principal."
+      },
+      {
+        type: "scenario",
+        situation: "Un collègue te demande comment poser une question hors-sujet sans perturber le contexte en cours.",
+        reponse: "/btw",
+        explication: "C'est la réponse à lui donner : /btw suivi de sa question."
+      },
+      {
+        type: "scenario",
+        situation: "Tu veux une info rapide (ex. la syntaxe d'une commande shell) sans que ça compte dans le fil principal de ta tâche.",
+        reponse: "/btw",
+        explication: "Une question d'appoint typique pour /btw."
+      },
+      {
+        type: "scenario",
+        situation: "Tu es curieux d'une chose sans lien avec ta tâche actuelle, mais tu ne veux pas « polluer » le contexte de ta session de travail.",
+        reponse: "/btw",
+        explication: "/btw existe précisément pour séparer les questions annexes du travail en cours."
+      }
+    ]
+  },
 
   /* --- Travail parallèle et délégation --------------------------------- */
   { id: 16, categorie: "Travail parallèle et délégation", commande: "/tasks", titre: "Suivre les tâches en cours", intro: "/tasks liste les travaux en arrière-plan et les sous-agents actifs.", disponible: false },

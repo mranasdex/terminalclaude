@@ -35,6 +35,21 @@ function demarrer() {
     blocExemple.style.display = "none";
   }
 
+  const blocOptions = document.getElementById("options-detail");
+  if (LEC.optionsDetail && LEC.optionsDetail.length) {
+    const table = document.getElementById("options-table");
+    table.innerHTML = "";
+    LEC.optionsDetail.forEach((o) => {
+      const row = document.createElement("div");
+      row.className = "options-row";
+      row.innerHTML = `<span class="options-opt"></span><span class="options-eff"></span>`;
+      row.querySelector(".options-opt").textContent = o.option;
+      row.querySelector(".options-eff").textContent = o.effet;
+      table.appendChild(row);
+    });
+    blocOptions.style.display = "block";
+  }
+
   FILE = LEC.exercices.slice();
   if (LEC.combo) FILE.push(Object.assign({ type: "combo" }, LEC.combo));
 
